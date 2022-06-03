@@ -50,4 +50,18 @@ router.post('/create', async (req, res) => {
     res.send(createdUser)
 })
 
+router.put('/add/intrument/:id', async (req, res) => {
+    try {
+        const { instrumentId } = req.body
+        const { id } = req.params
+        const user = await User.findById(id)
+        user.instruments.push(instrumentId)
+        let updatedUser = await user.findByIdAndUpdate(id, user)
+
+        res.send(updatedUser)
+    } catch (error) {
+        res.status(400).json({ "message": 'unable to add instrument' })
+    }
+})
+
 module.exports = router
