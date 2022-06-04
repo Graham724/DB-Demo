@@ -1,24 +1,22 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const userRoutes = require('./controllers/user')
-const instrumentRoutes = require('./controllers/instrument')
+const intrumentRoutes = require('./controllers/instrument')
 require('dotenv').config()
+
 const app = express()
 
-//middleware 
+// middleware
 app.use(express.json())
 
-
-//routes
+// routes
 app.use('/user', userRoutes)
-app.use('/instrument', instrumentRoutes)
+app.use('/instrument', intrumentRoutes)
 
-
-//db connection
+// db connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true})
-.then(() => console.log('DB connected'))
-.catch(err => console.error(err));
-
+    .then(() => console.log('DB connected'))
+    .catch(err => console.error(err));
 
 const PORT = process.env.PORT || 5000
 

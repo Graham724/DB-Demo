@@ -1,9 +1,10 @@
 const router = require('express').Router()
 const User = require('../models/user')
+const Instrument = require('../models/instruments')
 
 router.get('/', async (req, res) => {
     try {
-        const users = await User.find()
+        const users = await User.find().populate('instruments')
 
         res.json(users)
     } catch (error) {
@@ -11,10 +12,21 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/id/:_id', async (req, res) => {
     try {
-        const { id } = req.params
-        const user = await User.findOne({ _id: id })
+        const { _id } = req.params
+        const user = await User.findOne({ _id })
+
+        res.json(user)
+    } catch (error) {
+        res.status(500).json({ "message": String(error) })
+    }
+})
+
+router.get('/username/:username', async (req, res) => {
+    try {
+        const { username } = req.params
+        const user = await User.findOne({ username })
 
         res.json(user)
     } catch (error) {
@@ -36,31 +48,32 @@ router.delete('/:id', async (req, res) => {
 router.post('/create', async (req, res) => {
     try {
         const { username, password, age, name } = req.body
-    const createdUser = await new User ({
-        username,
-        password,
-        age,
-        name
-    }).save()
+        console.log(username, password)
+        const createdUser = await new User({
+            username,
+            password,
+            age,
+            name
+        }).save()
+
+        res.json({ 'message': 'user created' })
     } catch (error) {
-        console.log("ERROR: ", error)
         res.status(400).json({ "message": String(error) })
     }
-
-    res.send(createdUser)
 })
 
-router.put('/add/intrument/:id', async (req, res) => {
+router.put('/add/instrument/:id', async(req, res) => {
     try {
         const { instrumentId } = req.body
-        const { id } = req.params
+        const { id } = req.params 
+
         const user = await User.findById(id)
         user.instruments.push(instrumentId)
-        let updatedUser = await user.findByIdAndUpdate(id, user)
+        let updatedUser = await User.findByIdAndUpdate(id, user)
 
         res.send(updatedUser)
     } catch (error) {
-        res.status(400).json({ "message": 'unable to add instrument' })
+        res.status(500).json({ 'message': 'unable to add instrument' })
     }
 })
 

@@ -1,14 +1,14 @@
-const mongoose = require ('mongoose')
+const mongoose = require('mongoose')
 
 const instrumentSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        enum: ['guitar', 'drums', 'mayonnaise', 'bass guitar']
+        enum: ['guitar', 'mayonnaise', 'drums', 'bass', 'piano']
     },
-    brand : {
+    brand: {
         type: String,
-        required: true,
+        required: true
     },
     model: {
         type: String
@@ -18,9 +18,11 @@ const instrumentSchema = new mongoose.Schema({
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user', 
+        ref: 'User',
         required: true
     }
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model('Instrument', instrumentSchema)
